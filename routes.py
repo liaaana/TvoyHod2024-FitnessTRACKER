@@ -1,4 +1,7 @@
+import base64
 import json
+
+import cv2
 from flask import Response, render_template, request, redirect, url_for, flash
 from flask_login import (
     login_user,
@@ -7,14 +10,16 @@ from flask_login import (
     current_user,
 )
 from flask import stream_with_context, request
+from flask_socketio import emit
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import render_template, Response
 
-from exersices import gen_push_up, gen_curl, gen_squat
+from exersices import Exercises
 from forms.login_form import LoginForm
 from forms.register_form import RegistrationForm
-from app import app, db, login_manager
+from app import app, db, login_manager, socketio, base64_to_image
 from models.user import User
+
 
 
 def load_translations(language):
@@ -25,7 +30,6 @@ def load_translations(language):
     except FileNotFoundError:
         pass
     return translations
-
 
 
 @login_manager.user_loader
@@ -53,7 +57,7 @@ def rating():
 
 @app.route("/exercises")
 @login_required
-def exercises():
+def exercisesPage():
     return render_template("exercises.html")
 
 
@@ -63,18 +67,12 @@ def curl_preview():
     """Video streaming squat page."""
     return render_template("curl_preview.html")
 
+
 @app.route("/curl")
 @login_required
 def curl():
     """Video streaming squat page."""
     return render_template("curl.html")
-
-
-@app.route("/curl_feed")
-@login_required
-def curl_feed():
-    """Video streaming route. Put this in the src attribute of an img tag."""
-    return app.response_class(stream_with_context(gen_curl()), mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
 @app.route("/push_up_preview")
@@ -90,14 +88,6 @@ def push_up():
     return render_template("push_up.html")
 
 
-@app.route("/push_up_feed")
-@login_required
-def push_up_feed():
-    """Video streaming route. Put this in the src attribute of an img tag."""
-    return app.response_class(stream_with_context(gen_push_up()), mimetype="multipart/x-mixed-replace; boundary=frame")
-
-
-
 @app.route("/squat_preview")
 @login_required
 def squat_preview():
@@ -111,12 +101,37 @@ def squat():
     return render_template("squat.html")
 
 
-@app.route("/squat_feed")
-@login_required
-def squat_feed():
-    """Video streaming route. Put this in the src attribute of an img tag."""
-    return app.response_class(stream_with_context(gen_squat()), mimetype="multipart/x-mixed-replace; boundary=frame")
+currentExercise = ""
 
+exercises = Exercises()
+@socketio.on("exercise")
+def receive_exersice(exercise):
+    exercises.counter = 0
+    exercises.stage = None
+    global currentExercise
+    currentExercise = exercise
+
+
+@socketio.on("image")
+def receive_image(image):
+
+    image = base64_to_image(image)
+    img = None
+    if (currentExercise == "squat"):
+        img = exercises.gen_squat(image)
+    elif (currentExercise == "push_up"):
+        img = exercises.gen_push_up(image)
+    elif (currentExercise == "curl"):
+        img = exercises.gen_curl(image)
+
+    if img is None: return
+    processed_img_data = base64.b64encode(img).decode()
+    # Prepend the base64-encoded string with the data URL prefix
+    b64_src = "data:image/jpg;base64,"
+    processed_img_data = b64_src + processed_img_data
+    # Send the processed image back to the client
+
+    emit("processed_image", processed_img_data)
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -150,9 +165,10 @@ def login():
 @app.route('/profile')
 @login_required
 def profile():
-    user_language = current_user.language 
+    user_language = current_user.language
     translations = load_translations(user_language)
     return render_template('profile.html', user=current_user, translations=translations)
+
 
 @app.route("/change_username", methods=["POST"])
 @login_required
