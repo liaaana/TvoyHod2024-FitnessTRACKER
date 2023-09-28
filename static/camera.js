@@ -5,8 +5,7 @@ document.getElementById("container").style.display="none";
 var context = canvas.getContext("2d");
 const video = document.querySelector("#videoElement");
 
-video.width = 400;
-video.height = 300;
+
 
 if (navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices
@@ -19,10 +18,10 @@ if (navigator.mediaDevices.getUserMedia) {
     })
     .catch(function (err0r) {});
 }
-const FPS = 10;
+const FPS = 15;
 setInterval(() => {
-  width = video.width;
-  height = video.height;
+  width = canvas.width;
+  height = canvas.height;
   context.drawImage(video, 0, 0, width, height);
   var data = canvas.toDataURL("image/jpeg", 0.5);
   context.clearRect(0, 0, width, height);
