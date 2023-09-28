@@ -18,7 +18,7 @@ if (navigator.mediaDevices.getUserMedia) {
     })
     .catch(function (err0r) {});
 }
-const FPS = 15;
+const FPS = 12;
 setInterval(() => {
   width = canvas.width;
   height = canvas.height;
