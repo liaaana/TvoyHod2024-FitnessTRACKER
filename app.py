@@ -18,7 +18,7 @@ def runApp():
 
     with app.app_context():
         db.create_all()
-    app.run("0.0.0.0",port=1233)
+    app.run("0.0.0.0",port=1233, debug=True)
 
 if __name__ == "__main__":
    runApp()
