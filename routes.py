@@ -55,7 +55,6 @@ def index():
 
 
 @app.route("/rating")
-@login_required
 def rating():
     users = (
         User.query.order_by(User.exercise1_counter + User.exercise2_counter).all()
@@ -66,7 +65,6 @@ def rating():
 
 
 @app.route("/exercises")
-@login_required
 def exercisesPage():
     return render_template("exercises.html")
 
@@ -143,10 +141,18 @@ def receive_image(image):
 
     emit("processed_image", processed_img_data)
 
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
+        # Check if email ends with "innopolis.university"
+        # if not form.email.data.lower().endswith("innopolis.university"):
+        if not 0:
+            flash("Регистрация возможна только для студентов Университета Иннополис по студенческой электронной почте.", "error")
+            return render_template("register.html", form=form)
+
         hashed_password = generate_password_hash(form.password.data, method="sha256")
         new_user = User(
             name=form.name.data,
@@ -156,7 +162,10 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         return redirect(url_for("login"))
+
     return render_template("register.html", form=form)
+
+
 
 
 @app.route("/login", methods=["GET", "POST"])
