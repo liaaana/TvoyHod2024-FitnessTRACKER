@@ -53,7 +53,7 @@ class Exercises:
                 self.stage = "up"
                 self.counter += 1
 
-                current_user.crunches_counter += 1
+                current_user.exercise3_counter += 1
                 db.session.add(current_user)
                 db.session.commit()
 
@@ -111,7 +111,7 @@ class Exercises:
                 self.stage = "up"
                 self.counter += 1
                 # sound.play()
-                current_user.push_ups_counter += 1
+                current_user.exercise1_counter += 1
                 db.session.add(current_user)
                 db.session.commit()
 
@@ -161,7 +161,7 @@ class Exercises:
             if hip_knee_ankle_angle <= 90 and self.stage == 'up':
                 self.stage = "down"
                 self.counter += 1
-                current_user.squats_counter += 1
+                current_user.exercise2_counter += 1
                 db.session.add(current_user)
                 db.session.commit()
 

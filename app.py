@@ -24,8 +24,6 @@ if __name__ == "__main__":
    runApp()
 
 
-
-
 @socketio.on("connect")
 def test_connect():
     print("Socket successfully connected")

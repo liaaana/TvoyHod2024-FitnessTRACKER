@@ -58,11 +58,10 @@ def index():
 @login_required
 def rating():
     users = (
-        User.query.order_by(User.push_ups_counter + User.squats_counter + User.crunches_counter).all()
+        User.query.order_by(User.exercise1_counter + User.exercise2_counter).all()
     )
 
     users = users[::-1]
-
     return render_template("rating.html", users=users)
 
 
