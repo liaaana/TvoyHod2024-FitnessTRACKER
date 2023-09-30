@@ -37,6 +37,8 @@ class Exercises:
         if result.pose_landmarks:
             landmarks = result.pose_landmarks.landmark
 
+            hip= [landmarks[self.mp_pose.PoseLandmark.LEFT_HIP.value].x,
+                   landmarks[self.mp_pose.PoseLandmark.LEFT_HIP.value].y]
             shoulder = [landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
                         landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
             elbow = [landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value].x,
@@ -46,16 +48,20 @@ class Exercises:
             # if (0 < shoulder[0] < frame.shape[1] and 0 < shoulder[1] < frame.shape[0] and \
             #    0 < elbow[0] < frame.shape[1] and 0 < elbow[1] < frame.shape[0] and \
             #    0 < wrist[0] < frame.shape[1] and 0 < wrist[1] < frame.shape[0]):
-            angle = calculate_angle(shoulder, elbow, wrist)
-            if angle > 170:
+            counter_angle = calculate_angle(shoulder, elbow, wrist)
+            checker_angle = calculate_angle(hip, shoulder, elbow)
+            if counter_angle > 170:
                 self.stage = "down"
-            if angle < 30 and self.stage == 'down':
+            if counter_angle < 30 and self.stage == 'down':
                 self.stage = "up"
                 self.counter += 1
 
-                current_user.exercise3_counter += 1
+                current_user.exercise5_counter += 1
                 db.session.add(current_user)
                 db.session.commit()
+            if checker_angle > 15:
+                cv2.putText(image, 'PRESS HANDS', (25, 150), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 5,
+                            cv2.LINE_AA)
 
             cv2.rectangle(image, (0, 0), (225, 73), (230, 37, 69), -1)
 
@@ -122,7 +128,7 @@ class Exercises:
                 self.stage = "up"
                 self.counter += 1
                 # sound.play()
-                current_user.exercise1_counter += 1
+                current_user.exercise3_counter += 1
                 db.session.add(current_user)
                 db.session.commit()
 
@@ -172,9 +178,13 @@ class Exercises:
             if hip_knee_ankle_angle <= 90 and self.stage == 'up':
                 self.stage = "down"
                 self.counter += 1
-                current_user.exercise2_counter += 1
+                current_user.exercise4_counter += 1
                 db.session.add(current_user)
                 db.session.commit()
+
+            if hip_knee_ankle_angle < 60:
+                cv2.putText(image, 'TOO LOW', (25, 150), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 5,
+                            cv2.LINE_AA)
 
         cv2.rectangle(image, (0, 0), (225, 73), (230, 37, 69), -1)
 
