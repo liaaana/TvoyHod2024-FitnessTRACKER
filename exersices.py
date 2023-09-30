@@ -57,7 +57,7 @@ class Exercises:
                 db.session.add(current_user)
                 db.session.commit()
 
-            cv2.rectangle(image, (0, 0), (225, 73), (22, 163, 74), -1)
+            cv2.rectangle(image, (0, 0), (225, 73), (230, 37, 69), -1)
 
             cv2.putText(image, 'REPS', (25, 15),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
@@ -70,7 +70,7 @@ class Exercises:
 
         self.mp_drawing.draw_landmarks(image, result.pose_landmarks, self.mp_pose.POSE_CONNECTIONS,
                                        self.mp_drawing.DrawingSpec(color=(0, 40, 0), thickness=2, circle_radius=2),
-                                       self.mp_drawing.DrawingSpec(color=(22, 163, 74), thickness=2, circle_radius=2)
+                                       self.mp_drawing.DrawingSpec(color=(230, 37, 69), thickness=2, circle_radius=2)
                                        )
 
         frame = cv2.imencode('.jpg', image)[1].tobytes()
@@ -119,7 +119,7 @@ class Exercises:
                 cv2.putText(image, 'BAD BACK', (25, 150), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 5,
                             cv2.LINE_AA)
 
-        cv2.rectangle(image, (0, 0), (225, 73), (22, 163, 74), -1)
+        cv2.rectangle(image, (0, 0), (225, 73), (230, 37, 69), -1)
 
         cv2.putText(image, 'REPS', (25, 15),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
@@ -132,7 +132,7 @@ class Exercises:
 
         self.mp_drawing.draw_landmarks(image, result.pose_landmarks, self.mp_pose.POSE_CONNECTIONS,
                                        self.mp_drawing.DrawingSpec(color=(0, 40, 0), thickness=2, circle_radius=2),
-                                       self.mp_drawing.DrawingSpec(color=(22, 163, 74), thickness=2, circle_radius=2)
+                                       self.mp_drawing.DrawingSpec(color=(230, 37, 69), thickness=2, circle_radius=2)
                                        )
 
         frame = cv2.imencode('.jpg', image)[1].tobytes()
