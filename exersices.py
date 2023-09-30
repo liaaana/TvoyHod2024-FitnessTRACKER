@@ -26,7 +26,7 @@ class Exercises:
 
     mp_drawing = mp.solutions.drawing_utils
     mp_pose = mp.solutions.pose
-    pose = mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5)
+    pose = mp_pose.Pose(min_detection_confidence=0.95, min_tracking_confidence=0.95)
 
     def gen_curl(self, frame):
 
@@ -90,24 +90,35 @@ class Exercises:
 
             nose = [landmarks[self.mp_pose.PoseLandmark.NOSE.value].x,
                     landmarks[self.mp_pose.PoseLandmark.NOSE.value].y]
-            shoulder = [landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
+            shoulder_left = [landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
                         landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
-            elbow = [landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value].x,
+            shoulder_right = [landmarks[self.mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x,
+                        landmarks[self.mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
+            elbow_left = [landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value].x,
                      landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
-            wrist = [landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value].x,
+            elbow_right = [landmarks[self.mp_pose.PoseLandmark.RIGHT_ELBOW.value].x,
+                     landmarks[self.mp_pose.PoseLandmark.RIGHT_ELBOW.value].y]
+            wrist_left = [landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value].x,
                      landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value].y]
+            wrist_right = [landmarks[self.mp_pose.PoseLandmark.RIGHT_WRIST.value].x,
+                     landmarks[self.mp_pose.PoseLandmark.RIGHT_WRIST.value].y]
 
-            hip = [landmarks[self.mp_pose.PoseLandmark.LEFT_HIP.value].x,
+            hip_left = [landmarks[self.mp_pose.PoseLandmark.LEFT_HIP.value].x,
                    landmarks[self.mp_pose.PoseLandmark.LEFT_HIP.value].y]
-            knee = [landmarks[self.mp_pose.PoseLandmark.LEFT_KNEE.value].x,
+            hip_right = [landmarks[self.mp_pose.PoseLandmark.LEFT_HIP.value].x,
+                   landmarks[self.mp_pose.PoseLandmark.LEFT_HIP.value].y]
+            knee_left = [landmarks[self.mp_pose.PoseLandmark.LEFT_KNEE.value].x,
+                    landmarks[self.mp_pose.PoseLandmark.LEFT_KNEE.value].y]
+            knee_right = [landmarks[self.mp_pose.PoseLandmark.LEFT_KNEE.value].x,
                     landmarks[self.mp_pose.PoseLandmark.LEFT_KNEE.value].y]
 
-            shoulder_angle = calculate_angle(shoulder, elbow, wrist)
-            back_angle = calculate_angle(shoulder, hip, knee)
+            shoulder_angle_left = calculate_angle(shoulder_left, elbow_left, wrist_left)
+            shoulder_angle_right = calculate_angle(shoulder_right, elbow_right, wrist_right)
+            back_angle = calculate_angle(shoulder_left, hip_left, knee_left)
             # and nose[1] > shoulder[1]
-            if shoulder_angle <= 100 and nose[1] > shoulder[1]:
+            if shoulder_angle_left <= 100 and nose[1] > shoulder_left[1]:
                 self.stage = "down"
-            if shoulder_angle >= 160 and self.stage == 'down':
+            if shoulder_angle_left >= 160 and self.stage == 'down':
                 self.stage = "up"
                 self.counter += 1
                 # sound.play()
