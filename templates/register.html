@@ -3,6 +3,15 @@
 {% block content %}
 <div class="bg-white rounded-lg shadow-md p-10 mx-auto mt-16 w-full sm:w-96">
     <h1 class="text-2xl font-semibold mb-4">Регистрация</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="mb-4">
+                <div class="text-red-700">
+                    {{ messages[0] }}
+                </div>
+            </div>
+        {% endif %}
+    {% endwith %}
     <form method="POST" action="">
         {{ form.hidden_tag() }}
         <div class="mb-4">

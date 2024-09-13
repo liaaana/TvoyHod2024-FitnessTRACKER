@@ -31,5 +31,16 @@
         </form>
     </div>
 
+    <div class="mb-8">
+        <h2 class="text-xl font-semibold">Счетчики упражнений</h2>
+        <div class="mt-2">
+            <p>Отжимания до 10.09: {{ user.exercise1_counter }}</p>
+            <p>Приседания до 10.09: {{ user.exercise2_counter }}</p>
+            <p>Отжимания: {{ user.exercise3_counter }}</p>
+            <p>Приседания: {{ user.exercise4_counter }}</p>
+            <p>Сгибания: {{ user.exercise5_counter }}</p>
+        </div>
+    </div>
+
 </div>
 {% endblock %}
